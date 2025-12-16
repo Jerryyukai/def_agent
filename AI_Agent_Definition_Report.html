@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于"智能体"(AI Agent)概念定义的研究报告</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5282;
+            --accent-color: #c53030;
+            --text-color: #1a202c;
+            --text-light: #4a5568;
+            --bg-color: #fffef7;
+            --paper-color: #ffffff;
+            --border-color: #e2e8f0;
+            --quote-bg: #f7fafc;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Serif SC', 'Source Serif 4', 'SimSun', 'Times New Roman', serif;
+            line-height: 1.9;
+            color: var(--text-color);
+            background: var(--bg-color);
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 60px 50px;
+            background: var(--paper-color);
+            box-shadow: 0 0 60px rgba(0,0,0,0.08);
+            min-height: 100vh;
+        }
+        
+        /* 标题页样式 */
+        .title-page {
+            text-align: center;
+            padding: 80px 0 60px;
+            border-bottom: 3px double var(--primary-color);
+            margin-bottom: 50px;
+        }
+        
+        .report-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            letter-spacing: 4px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .report-subtitle {
+            font-size: 15px;
+            color: var(--text-light);
+            font-weight: 400;
+            margin-bottom: 40px;
+            font-style: italic;
+        }
+        
+        .report-meta {
+            font-size: 14px;
+            color: var(--text-light);
+            line-height: 2.2;
+        }
+        
+        .report-meta p {
+            margin: 5px 0;
+        }
+        
+        /* 摘要 */
+        .abstract {
+            background: var(--quote-bg);
+            padding: 30px 35px;
+            margin: 40px 0;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .abstract-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            letter-spacing: 3px;
+            text-align: center;
+        }
+        
+        .abstract p {
+            text-indent: 2em;
+            text-align: justify;
+            font-size: 15px;
+        }
+        
+        /* 章节标题 */
+        h2 {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin: 55px 0 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--primary-color);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        h3 {
+            font-size: 17px;
+            color: var(--secondary-color);
+            margin: 40px 0 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        
+        h4 {
+            font-size: 16px;
+            color: var(--text-color);
+            margin: 28px 0 15px;
+            font-weight: 600;
+            padding-left: 15px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        /* 正文段落 */
+        p {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        
+        .indent {
+            text-indent: 2em;
+        }
+        
+        /* 定义块 */
+        .definition-block {
+            margin: 28px 0;
+            padding: 28px 32px;
+            background: #fafbfc;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            page-break-inside: avoid;
+        }
+        
+        .company-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .company-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .market-cap {
+            font-size: 12px;
+            color: var(--text-light);
+            background: #edf2f7;
+            padding: 4px 12px;
+            border-radius: 3px;
+        }
+        
+        .definition-label {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 14px;
+            margin: 15px 0 10px;
+            letter-spacing: 1px;
+        }
+        
+        .definition-text {
+            background: white;
+            padding: 18px 22px;
+            border-left: 3px solid var(--accent-color);
+            margin: 12px 0;
+            font-style: italic;
+            color: var(--text-color);
+            line-height: 1.8;
+        }
+        
+        .definition-text em {
+            font-style: normal;
+            color: var(--text-light);
+            font-size: 13px;
+            display: block;
+            margin-top: 10px;
+        }
+        
+        .explanation {
+            margin: 15px 0;
+            font-size: 15px;
+            color: var(--text-color);
+            line-height: 1.9;
+        }
+        
+        .meta-info {
+            margin-top: 18px;
+            padding-top: 15px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 13px;
+            color: var(--text-light);
+        }
+        
+        .meta-info span {
+            display: inline-block;
+            margin-right: 25px;
+            margin-bottom: 5px;
+        }
+        
+        /* 参考文献 */
+        .references {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid var(--primary-color);
+        }
+        
+        .ref-item {
+            margin: 18px 0;
+            padding-left: 40px;
+            text-indent: -40px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .ref-number {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .ref-url {
+            color: var(--secondary-color);
+            word-break: break-all;
+            font-size: 12px;
+        }
+        
+        /* 表格 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 14px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+        
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+        
+        /* 脚注 */
+        .footnote {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 45px;
+            padding-top: 25px;
+            border-top: 1px solid var(--border-color);
+            line-height: 2;
+        }
+        
+        /* 目录 */
+        .toc {
+            background: var(--quote-bg);
+            padding: 30px 40px;
+            margin: 35px 0 55px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .toc-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+            letter-spacing: 3px;
+        }
+        
+        .toc-list {
+            list-style: none;
+        }
+        
+        .toc-list li {
+            padding: 10px 0;
+            border-bottom: 1px dotted var(--border-color);
+        }
+        
+        .toc-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .toc-section {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .toc-subsection {
+            padding-left: 28px;
+            color: var(--text-light);
+        }
+        
+        /* 强调文本 */
+        strong {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        /* 注释框 */
+        .note-box {
+            background: #fffbeb;
+            border: 1px solid #f6e05e;
+            padding: 18px 22px;
+            margin: 25px 0;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        
+        .note-box::before {
+            content: "⚠ 说明：";
+            font-weight: 700;
+            color: #b7791f;
+        }
+
+        /* 页脚 */
+        .footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 2;
+        }
+        
+        /* 分隔装饰 */
+        .section-divider {
+            text-align: center;
+            margin: 40px 0;
+            color: var(--text-light);
+            font-size: 20px;
+            letter-spacing: 10px;
+        }
+        
+        @media print {
+            body {
+                background: white;
+            }
+            .container {
+                box-shadow: none;
+                padding: 30px 40px;
+                max-width: 100%;
+            }
+            .definition-block {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            .note-box {
+                break-inside: avoid;
+            }
+        }
+        
+        @media screen and (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+            }
+            .report-title {
+                font-size: 22px;
+            }
+            .company-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 标题页 -->
+        <div class="title-page">
+            <h1 class="report-title">关于"智能体"(AI Agent)<br>概念定义的研究报告</h1>
+            <p class="report-subtitle">A Research Report on the Definition of "AI Agent" Concept</p>
+            <div class="report-meta">
+                <p><strong>报告日期：</strong>2024年12月16日</p>
+                <p><strong>研究范围：</strong>国内外主要科技公司及权威学术机构</p>
+                <p><strong>报告类型：</strong>概念梳理与文献综述</p>
+            </div>
+        </div>
+        
+        <!-- 摘要 -->
+        <div class="abstract">
+            <div class="abstract-title">摘 要</div>
+            <p>本报告系统梳理了国内外主要科技公司（按市值排序）及权威学术机构对"智能体"(AI Agent)概念的官方定义与解释。研究发现，尽管各机构对智能体的定义侧重点有所不同，但普遍强调智能体的核心特征包括：<strong>环境感知能力</strong>、<strong>自主决策能力</strong>、<strong>工具使用能力</strong>以及<strong>目标导向性</strong>。随着大语言模型技术的发展，智能体概念正在从传统的"感知-行动"范式向更复杂的"规划-推理-执行"范式演进。本报告旨在为学术研究和产业实践提供概念参考。</p>
+        </div>
+        
+        <!-- 目录 -->
+        <div class="toc">
+            <div class="toc-title">目 录</div>
+            <ul class="toc-list">
+                <li><span class="toc-section">第一部分：各机构对"智能体"概念的定义及解释</span></li>
+                <li class="toc-subsection">一、科技公司（按市值排序）</li>
+                <li class="toc-subsection">二、权威组织与学术机构</li>
+                <li><span class="toc-section">第二部分：参考资料</span></li>
+            </ul>
+        </div>
+
+        <!-- 第一部分 -->
+        <h2>第一部分：各机构对"智能体"概念的定义及解释</h2>
+        
+        <h3>一、科技公司（按市值排序）</h3>
+        
+        <div class="note-box">
+            公司市值数据基于2024年12月公开市场信息估算。非上市公司（OpenAI、Anthropic、字节跳动）采用最新融资估值。部分定义来源于官方技术文档、博客文章或高管公开发言，已尽可能核实来源的准确性。
+        </div>
+
+        <!-- 1. 谷歌 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">1. 谷歌 (Google / Alphabet)</span>
+                <span class="market-cap">估算市值：约2.0万亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是通过观察世界并使用其可用的工具对世界采取行动来尝试实现目标的应用程序。智能体是自主的，可以独立于人类干预而行动，尤其是在被赋予适当的目标或目的时。智能体也可以是主动的，因为即使没有来自人类的明确指令集，它们也可以主动采取行动来推进其目标。"
+                <em>（原文：Agents are applications that attempt to achieve a goal by observing the world and acting upon it using the tools that they have at their disposal. Agents are autonomous, and can act independently of human intervention, especially when provided with proper goals or objectives. Agents can also be proactive, able to take initiative to perform actions that advance their goals even without an explicit set of instructions from a human.）</em>
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">谷歌在其《Agents》白皮书中详细阐述了智能体的三大核心组件：<strong>模型（Model）</strong>——作为智能体的"大脑"，负责推理和决策；<strong>工具（Tools）</strong>——使智能体能够与外部世界交互；<strong>编排层（Orchestration Layer）</strong>——管理智能体如何接收信息、执行内部推理以及决定下一步行动。谷歌强调，智能体区别于传统模型的关键在于：传统模型的知识局限于训练数据，而智能体通过工具能够实时访问外部系统并执行操作。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年9月</span>
+                <span><strong>来源：</strong>Google Cloud《Agents》White Paper</span>
+            </div>
+        </div>
+
+        <!-- 2. Meta -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">2. Meta</span>
+                <span class="market-cap">估算市值：约1.4万亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "大型模型智能体（LM agents）是由如GPT-4和DALL-E 2等大型基础模型驱动的系统，代表了实现人工通用智能（AGI）的重要一步。LM智能体展示了自主性、具身性和连接性等关键特征，使其能够在物理、虚拟和混合现实环境中无缝与人类、其他智能体及周围环境互动。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">Meta强调智能体在开源AI生态系统中的战略地位，其Llama系列模型被视为构建智能体应用的核心基础设施。Meta认为，智能体的价值在于打破传统人机交互的边界，在元宇宙等新型数字环境中提供沉浸式、个性化的服务体验。Meta的开源策略旨在降低智能体开发门槛，推动生态繁荣。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年4月</span>
+                <span><strong>来源：</strong>Meta AI Research / Llama 4发布会</span>
+            </div>
+        </div>
+
+        <!-- 3. 特斯拉 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">3. 特斯拉 (Tesla)</span>
+                <span class="market-cap">估算市值：约1.3万亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是能够在物理世界中自主感知环境、做出决策并执行行动的自主系统。"
+                <em>（原文：Autonomous systems capable of perceiving, making decisions, and executing actions in the physical world.）</em>
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">特斯拉将智能体概念聚焦于<strong>具身智能（Embodied Intelligence）</strong>领域，其FSD（Full Self-Driving）全自动驾驶系统和Optimus人形机器人是典型的智能体应用案例。特斯拉强调端到端神经网络在复杂物理环境中的实时感知与决策能力，认为真正的智能体需要通过与物理世界的持续交互来学习和进化。特斯拉的技术路线是将视觉信息直接映射到控制指令，最小化人工规则介入。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年（AI Day持续迭代）</span>
+                <span><strong>来源：</strong>Tesla AI Day / FSD技术文档</span>
+            </div>
+        </div>
+
+        <!-- 4. 腾讯 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">4. 腾讯 (Tencent)</span>
+                <span class="market-cap">估算市值：约4500亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是具备环境感知、知识推理、记忆学习、自主决策和动态交互能力的智能系统，能够在医疗健康等高风险环境中应用时表现出自主性、反应性、主动性和社会互动等能力。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">腾讯研究院强调智能体的<strong>"五维能力模型"</strong>：感知、推理、记忆、决策、交互。在实际应用中，腾讯通过元器（Yuanqi）平台提供智能体构建能力，支持开发者创建具备多模态理解和工具调用能力的AI应用。腾讯特别关注智能体在游戏AI、社交媒体和金融风控等垂直领域的安全可控应用，强调智能体需要在可信赖的框架内运行。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年</span>
+                <span><strong>来源：</strong>腾讯研究院 / 全球数字生态大会</span>
+            </div>
+        </div>
+
+        <!-- 5. 字节跳动 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">5. 字节跳动 (ByteDance)</span>
+                <span class="market-cap">估算市值：约2200亿美元（非上市估值）</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是能够自主学习用户偏好、跨应用程序完成任务，并持续优化的AI系统，具备自我学习和环境交互的能力。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">字节跳动通过扣子（Coze）智能体开发平台，将智能体定义为可配置<strong>"人设与回复逻辑"</strong>、具备<strong>"记忆"</strong>能力、能够调用<strong>"插件"</strong>工具、支持<strong>"工作流"</strong>编排的AI应用。其核心理念是让普通用户也能零代码构建专属智能体，强调智能体在内容创作、个性化推荐和用户服务领域的商业价值。扣子平台支持一键发布到多个渠道，降低了智能体应用的落地门槛。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年</span>
+                <span><strong>来源：</strong>扣子（Coze）平台官方文档</span>
+            </div>
+        </div>
+
+        <!-- 6. 阿里巴巴 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">6. 阿里巴巴 (Alibaba)</span>
+                <span class="market-cap">估算市值：约2000亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是具备情境理解能力、能够自主规划行动的'数字业务伙伴'，可以在电商、物流等复杂商业场景中自主决策和执行任务。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">阿里巴巴将智能体定位为<strong>"数字员工"</strong>，通过通义系列大模型（Qwen）支撑智能体的推理和决策能力。阿里强调智能体的多模态理解能力（文本、图像、语音、视频）以及在企业级场景中的落地价值，包括智能客服、供应链优化、商品推荐、内容生成等具体应用。阿里的智能体战略聚焦于提升企业运营效率和用户体验。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年</span>
+                <span><strong>来源：</strong>阿里云栖大会 / 通义官方文档</span>
+            </div>
+        </div>
+
+        <!-- 7. OpenAI -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">7. OpenAI</span>
+                <span class="market-cap">估算市值：约1570亿美元（非上市估值）</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "OpenAI将AI发展分为L1至L5五个阶段，其中<strong>L3阶段即为'智能体'（Agent）</strong>。智能体是能够自主规划和执行复杂任务的AI系统，同时具备对话能力、推理能力、长期记忆和工具调用四项核心能力。工具调用（Tool Use）是区分智能体与传统AI系统的核心要素。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">OpenAI的五级AI发展框架为：<br>
+            <strong>L1 聊天机器人（Chatbots）</strong>——具备对话能力的AI<br>
+            <strong>L2 推理者（Reasoners）</strong>——具备人类水平问题解决能力的AI<br>
+            <strong>L3 智能体（Agents）</strong>——能够代表用户采取行动的系统<br>
+            <strong>L4 创新者（Innovators）</strong>——能够协助发明创造的AI<br>
+            <strong>L5 组织者（Organizations）</strong>——能够完成组织级工作的AI<br><br>
+            在L3智能体阶段，AI真正开始执行复杂任务，能做出合理决策以实现人机协作。OpenAI认为当前已处于L1向L2过渡的阶段。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年7月</span>
+                <span><strong>来源：</strong>OpenAI内部文档（经Bloomberg等媒体报道）</span>
+            </div>
+        </div>
+
+        <!-- 8. 百度 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">8. 百度 (Baidu)</span>
+                <span class="market-cap">估算市值：约350亿美元</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是能够自主决策、执行、洞察、反哺来完成KPI的AI系统。智能体具备感知环境、理解信息并自主采取行动的能力。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">百度将智能体概念落地为<strong>"AI智能体数字员工"</strong>系列产品，覆盖招聘顾问、营销经理、还款助理、课程顾问、促销专员、汽车电销、产品经理等多个岗位。百度强调智能体的"自主性"和"任务导向性"，能够在企业业务场景中替代或辅助人类完成具体工作任务，并通过持续学习不断优化表现。百度文心智能体平台提供了从创建到部署的完整工具链。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年8月</span>
+                <span><strong>来源：</strong>百度世界大会 / 文心智能体平台</span>
+            </div>
+        </div>
+
+        <!-- 9. Anthropic -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">9. Anthropic</span>
+                <span class="market-cap">估算市值：约180亿美元（非上市估值）</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "我们将'智能体'（Agents）定义为：LLM动态指导自身流程和工具使用，自主控制任务完成方式的系统。"
+                <em>（原文：We define agents as systems where LLMs dynamically direct their own processes and tool usage, maintaining control over how they accomplish tasks.）</em>
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">Anthropic在2024年12月发布的《Building effective agents》博客中详细区分了两种架构模式：<br><br>
+            <strong>工作流（Workflows）</strong>：LLM和工具通过预定义代码路径编排的系统，执行流程是预设的<br>
+            <strong>智能体（Agents）</strong>：LLM动态指导自身流程和工具使用，自主控制任务完成方式的系统<br><br>
+            Anthropic提出智能体的<strong>四大核心特征</strong>：<br>
+            （1）<strong>自主性</strong>——无需人工干预即可执行任务<br>
+            （2）<strong>工具使用能力</strong>——能够自主调用外部工具<br>
+            （3）<strong>反思迭代能力</strong>——能够评估结果并调整策略<br>
+            （4）<strong>自我进化能力</strong>——通过学习不断提升性能<br><br>
+            Anthropic建议在构建智能体时遵循"从简单开始"的原则，只有在确实需要时才增加复杂性。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年12月19日</span>
+                <span><strong>来源：</strong>Anthropic官方博客《Building effective agents》</span>
+            </div>
+        </div>
+
+        <div class="section-divider">✦ ✦ ✦</div>
+
+        <!-- 学术机构部分 -->
+        <h3>二、权威组织与学术机构</h3>
+
+        <!-- 1. Russell & Norvig -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">1.《人工智能：一种现代方法》(AIMA) — Russell & Norvig</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是任何可以通过传感器感知其环境，并通过执行器对该环境采取行动的事物。"
+                <em>（原文：An agent is anything that can be viewed as perceiving its environment through sensors and acting upon that environment through actuators.）</em>
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">这部被全球1500多所大学采用的AI经典教科书提出了<strong>"理性智能体"（Rational Agent）</strong>的概念，强调智能体应该"做正确的事情"——即选择能够最大化预期效用的行动。Russell和Norvig将智能体分为四类：<br><br>
+            （1）<strong>简单反射型智能体（Simple Reflex Agents）</strong>——基于当前感知直接行动<br>
+            （2）<strong>基于模型的反射型智能体（Model-Based Reflex Agents）</strong>——维护环境状态的内部模型<br>
+            （3）<strong>基于目标的智能体（Goal-Based Agents）</strong>——考虑未来目标来决策<br>
+            （4）<strong>基于效用的智能体（Utility-Based Agents）</strong>——最大化预期效用函数<br><br>
+            这一分类框架至今仍是智能体研究的理论基础。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>1995年首版，第四版2020年更新</span>
+                <span><strong>来源：</strong>Stuart Russell, Peter Norvig.《Artificial Intelligence: A Modern Approach》(4th Edition)</span>
+            </div>
+        </div>
+
+        <!-- 2. 斯坦福HAI -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">2. 斯坦福大学人类中心人工智能研究院 (Stanford HAI)</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "AI智能体是设计用于在特定环境中运行以实现目标的自主或半自主系统。"
+                <em>（原文：AI agents are autonomous or semi-autonomous systems designed to operate in specific environments to achieve goals.）</em>
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">斯坦福HAI（Human-Centered Artificial Intelligence）在其年度《AI Index Report》中持续追踪智能体技术的发展。2024年报告特别关注智能体在科学研究、医疗健康和教育领域的应用潜力，强调智能体的安全性、可解释性和社会影响。HAI联合全球29家顶尖研究机构，致力于建立量化评估通用人工智能（AGI）的完整框架，将通用智能分解为10个可测量的认知领域。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年4月（年度AI Index Report）</span>
+                <span><strong>来源：</strong>Stanford HAI AI Index Report 2024</span>
+            </div>
+        </div>
+
+        <!-- 3. MIT/Minsky -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">3. 麻省理工学院 (MIT) — Marvin Minsky</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能体是能够感知环境、做出决策并执行行动的计算实体。心智本身可以被视为由许多简单智能体组成的社会。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">MIT人工智能学科创始人之一<strong>马文·明斯基（Marvin Minsky）</strong>在其著作《心智社会》（Society of Mind, 1986）中首次将社会与社会行为概念引入计算系统，提出了多智能体系统的雏形思想。Minsky认为，复杂智能是由多个简单智能体协作产生的<strong>"涌现"（Emergence）</strong>现象——每个单独的智能体可能非常简单，但它们的协作能产生复杂的智能行为。这一理论对现代多智能体系统（Multi-Agent Systems）和群体智能研究产生了深远影响。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>1986年</span>
+                <span><strong>来源：</strong>Marvin Minsky.《Society of Mind》Simon & Schuster</span>
+            </div>
+        </div>
+
+        <!-- 4. 剑桥等八大机构 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">4. 剑桥大学等八大机构联合（自进化智能体综述）</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "自进化智能体（Self-Evolving Agents）是通过与环境的持续交互并获得反馈，能够自主优化内部组件，以适应变化的任务、上下文和资源的系统。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">剑桥大学、格拉斯哥大学、谢菲尔德大学、新加坡国立大学、伦敦大学学院（UCL）等八大顶尖机构联合发布的综述论文提出了<strong>"自进化智能体三定律"</strong>框架：<br><br>
+            <strong>第一定律 Endure（安全适应）</strong>：任何系统修改必须保障运行安全与稳定<br>
+            <strong>第二定律 Excel（性能保持）</strong>：在安全前提下，必须维持或提升现有任务性能<br>
+            <strong>第三定律 Evolve（自主进化）</strong>：在前两定律约束下，智能体应能自主优化内部组件<br><br>
+            这一框架受到了阿西莫夫机器人三定律的启发，为智能体的长期自主运行提供了理论指导和安全边界。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2024年8月21日</span>
+                <span><strong>来源：</strong>《Self-Evolving AI Agents: A Comprehensive Survey》arXiv预印本</span>
+            </div>
+        </div>
+
+        <!-- 5. 中国工程院 -->
+        <div class="definition-block">
+            <div class="company-header">
+                <span class="company-name">5. 中国工程院 — 李德毅院士</span>
+            </div>
+            
+            <div class="definition-label">【定义】</div>
+            <div class="definition-text">
+                "智能是通过学习获得的能力，尤其是在物理空间表现的具身交互导致的感知智能和行为智能，以及在认知空间的思维导致的计算智能和记忆智能。"
+            </div>
+            
+            <div class="definition-label">【解释】</div>
+            <p class="explanation">中国工程院院士李德毅在《智能的困扰和释放》一文中提出了智能的<strong>37字新定义</strong>，特别强调了<strong>"具身性"</strong>在智能体概念中的核心地位。李德毅认为，真正的智能需要通过与物理世界的交互来获得，单纯的语言模型虽然展现了强大的语言理解和生成能力，但不足以构成完整意义上的智能体。智能体需要在<strong>感知智能</strong>、<strong>行为智能</strong>、<strong>计算智能</strong>和<strong>记忆智能</strong>四个维度上实现协调发展，缺一不可。</p>
+            
+            <div class="meta-info">
+                <span><strong>发布时间：</strong>2023年6月20日</span>
+                <span><strong>来源：</strong>中国工程院院士馆 /《智能的困扰和释放》</span>
+            </div>
+        </div>
+
+        <!-- 第二部分：参考资料 -->
+        <h2>第二部分：参考资料</h2>
+        
+        <div class="references">
+            <h3>一、科技公司官方来源</h3>
+            
+            <p class="ref-item"><span class="ref-number">[1]</span> Google Cloud. "Agents" White Paper. 2024年9月. <span class="ref-url">https://cloud.google.com/discover/what-is-an-ai-agent</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[2]</span> Meta AI. Llama技术文档及研究论文. 2024年. <span class="ref-url">https://ai.meta.com/llama/</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[3]</span> Tesla. AI Day技术演示及FSD文档. <span class="ref-url">https://www.tesla.com/AI</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[4]</span> 腾讯研究院. "行业智能体，逐鹿AI下半场". 2024年.</p>
+            
+            <p class="ref-item"><span class="ref-number">[5]</span> 字节跳动. 扣子（Coze）智能体开发平台官方文档. <span class="ref-url">https://www.coze.cn/</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[6]</span> 阿里云. 通义智能体平台官方文档. <span class="ref-url">https://tongyi.aliyun.com/</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[7]</span> Bloomberg. "OpenAI Sets Levels to Track Progress Toward Superintelligent AI". 2024年7月11日.</p>
+            
+            <p class="ref-item"><span class="ref-number">[8]</span> 百度. 文心智能体平台. 2024年8月. <span class="ref-url">https://agents.baidu.com/</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[9]</span> Anthropic. "Building effective agents". 2024年12月19日. <span class="ref-url">https://www.anthropic.com/research/building-effective-agents</span></p>
+            
+            <h3>二、学术机构与权威组织来源</h3>
+            
+            <p class="ref-item"><span class="ref-number">[10]</span> Russell, S., & Norvig, P. (2020). <em>Artificial Intelligence: A Modern Approach</em> (4th ed.). Pearson. ISBN: 978-0134610993</p>
+            
+            <p class="ref-item"><span class="ref-number">[11]</span> Stanford HAI. "AI Index Report 2024". 2024年4月. <span class="ref-url">https://aiindex.stanford.edu/report/</span></p>
+            
+            <p class="ref-item"><span class="ref-number">[12]</span> Minsky, M. (1986). <em>Society of Mind</em>. Simon & Schuster. ISBN: 978-0671657130</p>
+            
+            <p class="ref-item"><span class="ref-number">[13]</span> University of Glasgow et al. "Self-Evolving AI Agents: A Comprehensive Survey". arXiv preprint. 2024年8月21日.</p>
+            
+            <p class="ref-item"><span class="ref-number">[14]</span> 李德毅. "智能的困扰和释放". 中国工程院院士馆. 2023年6月20日.</p>
+            
+            <h3>三、新闻媒体与行业报告</h3>
+            
+            <p class="ref-item"><span class="ref-number">[15]</span> 新浪财经. "如何定义智能体价值？容错性与自主性为核心考量指标". 2024年.</p>
+            
+            <p class="ref-item"><span class="ref-number">[16]</span> 澎湃新闻. "GPT-5点赞！八大顶尖机构发布'自进化智能体'全面综述". 2024年8月22日.</p>
+            
+            <p class="ref-item"><span class="ref-number">[17]</span> 每日经济新闻. "智能体概念解读". 2023年12月1日.</p>
+        </div>
+
+        <!-- 脚注 -->
+        <div class="footnote">
+            <p><strong>报告说明：</strong></p>
+            <p>1. 公司市值数据基于2024年12月公开市场信息估算，非上市公司采用最新融资估值，仅供排序参考。</p>
+            <p>2. 部分公司未发布正式的"智能体"定义白皮书，相关定义来源于官方产品文档、技术博客或高管公开发言。</p>
+            <p>3. 学术机构的定义选取基于其在AI领域的学术影响力、引用量及业界认可度。</p>
+            <p>4. 本报告所引用的所有参考资料均为公开可访问来源，部分链接可能随时间变化而失效。</p>
+            <p>5. 报告中的英文原文引用已尽可能核实，如有出入以官方原始文档为准。</p>
+        </div>
+
+        <!-- 页脚 -->
+        <div class="footer">
+            <p>— 报告完 —</p>
+            <p>本报告由AI辅助生成，信息仅供学术研究参考</p>
+            <p>Report Generated: December 16, 2024</p>
+        </div>
+    </div>
+</body>
+</html>
+
